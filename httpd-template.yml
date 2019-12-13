@@ -1,38 +1,42 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: example-template
+  name: httpd-example
 labels:
   role: web
 message: You chose to deploy ${WEB_SERVER}
 objects:
   - kind: Pod
-    apiVersion: v1
+    apiVersion: "v1"
     metadata:
-      name: example-pod
+      name: "mywebserverpod"
+      labels: 
+        name: "webserver"
     spec:
       containers:
-        - name: ${WEB_SERVER}
+        - name: "webserver"
           image: ${WEB_SERVER}
-  - kind: Service
-    apiVersion: v1
-    metadata:
-      name: example-svc
-    spec:
-      ports:
-        - port: 80
-      selector:
-        role: web
-  - kind: Route
-    apiVersion: v1
-    metadata:
-      name: example-route
-    spec:
-      to:
-        kind: Service
-        name: example-svc
+          ports:
+            - name: "web"
+              containerPort: 80
+          volumeMounts:
+            - name: volume-webroot
+              mountPath: "/var/www/html"
+      volumes:
+        - name: volume-webroot
+          persistentVolumeClaim:
+            claimName: pvc-web
+      PersistentVolumeClaim:
+        - metadata:
+            name: "pvc-web"
+          spec:
+            accessModes:
+              - "ReadWriteMany"
+            resources:
+              requests:
+                storage: 1Gi
 parameters:
   - name: WEB_SERVER
     displayName: Web Server
     description: Web server image to use
-    value: nginx
+    value: centos/httpd-24-centos7
