@@ -4,10 +4,10 @@ metadata:
   name: httpd-example
 labels:
   role: web
-message: You chose to deploy ${WEB_SERVER}
+message: "You chose to deploy docker.io/centos/httpd"
 objects:
-  - kind: Pod
-    apiVersion: "v1"
+  - apiVersion: "v1"
+    kind: "Pod"
     metadata:
       name: "mywebserverpod"
       labels: 
@@ -15,28 +15,7 @@ objects:
     spec:
       containers:
         - name: "webserver"
-          image: ${WEB_SERVER}
+          image: "docker.io/centos/httpd"
           ports:
             - name: "web"
-              containerPort: 80
-          volumeMounts:
-            - name: volume-webroot
-              mountPath: "/var/www/html"
-      volumes:
-        - name: volume-webroot
-          persistentVolumeClaim:
-            claimName: pvc-web
-      PersistentVolumeClaim:
-        - metadata:
-            name: "pvc-web"
-          spec:
-            accessModes:
-              - "ReadWriteMany"
-            resources:
-              requests:
-                storage: 1Gi
-parameters:
-  - name: WEB_SERVER
-    displayName: Web Server
-    description: Web server image to use
-    value: centos/httpd-24-centos7
+              containerPort: 8080
