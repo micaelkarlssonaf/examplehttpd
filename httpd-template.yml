@@ -15,7 +15,7 @@ objects:
     spec:
       containers:
         - name: "webserver"
-          image: "docker.io/centos/httpd"
+          image: "centos/httpd-24-centos7"
           ports:
             - name: "web"
               containerPort: 8080
